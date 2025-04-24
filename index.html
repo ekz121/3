@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Perjalanan Luar Angkasa</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #d1d1d1;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            background-color: #080808;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            border-bottom: 1px solid #00d4ff;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #00d4ff;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 12px;
+        }
+
+        nav ul li a {
+            color: #d1d1d1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: #ff4081;
+        }
+
+        main {
+            padding: 15px;
+            margin-top: 70px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-box {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px auto;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            max-width: 900px;
+            position: relative;
+            border: 1px solid #00d4ff;
+        }
+
+        .content-box:hover, .content-box.focused {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .content-box.focused {
+            transform: scale(1.05);
+            background-color: #2a2a2a;
+            border: 1px solid #ff4081;
+        }
+
+        .content-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 8px 0;
+            transition: transform 0.3s;
+        }
+
+        .content-box.focused img {
+            transform: scale(1.03);
+        }
+
+        .content-box a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .content-box a:hover {
+            color: #ff4081;
+        }
+
+        .read-more {
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 8px;
+            color: #00d4ff;
+            transition: color 0.3s;
+        }
+
+        .read-more:hover {
+            color: #ff4081;
+        }
+
+        .hidden-content {
+            display: none;
+            margin-top: 12px;
+            text-align: left;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 8px;
+            background-color: #121212;
+            border-radius: 5px;
+            border: 1px solid #00d4ff;
+        }
+
+        .content-box.focused .hidden-content {
+            display: block;
+        }
+
+        footer {
+            background-color: #080808;
+            padding: 8px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            box-sizing: border-box;
+            border-top: 1px solid #00d4ff;
+        }
+
+        footer p {
+            margin: 0;
+            color: #00d4ff;
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #00d4ff;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .gallery-item {
+            background-color: #1e1e1e;
+            padding: 8px;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 1px solid #00d4ff;
+        }
+
+        .gallery-item:hover, .gallery-item.focused {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px rgba(255, 64, 129, 0.5);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .checkout-box {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px auto;
+            text-align: center;
+            max-width: 900px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #ff4081;
+        }
+
+        .checkout-box:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px rgba(255, 64, 129, 0.5);
+        }
+
+        .checkout-box a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .checkout-box a:hover {
+            color: #ff4081;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 550px;
+            width: 90%;
+            border: 1px solid #00d4ff;
+            position: relative;
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #00d4ff;
+        }
+
+        .modal-content pre {
+            background-color: #121212;
+            padding: 8px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #00d4ff;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #00d4ff;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff4081;
+        }
+
+        .copy-btn {
+            background-color: #00d4ff;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 8px;
+            color: #121212;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #ff4081;
+        }
+
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 13px;
+            }
+
+            .content-box {
+                margin: 8px auto;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                background-color: #080808;
+                width: 100%;
+                top: 60px;
+                left: 0;
+                text-align: center;
+                border: 1px solid #00d4ff;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            nav ul li {
+                display: block;
+                margin: 8px 0;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }   
+
+            .modal-content {
+                width: 95%;
+            }
+
+            header {
+                flex-direction: column;
+                padding: 8px;
+            }
+
+            header h1 {
+                font-size: 18px;
+            }
+        }
+
+        @media only screen and (min-width: 601px) and (max-width: 900px) {
+            .content-box {
+                max-width: 700px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+
+    <header>
+        <h1>Blog Perjalanan antar daerah</h1>
+        <nav>
+            <div class="menu-icon">☰</div>
+            <ul class="nav-links">
+                <li><a href="#beranda" onclick="scrollToSection('beranda')">Beranda</a></li>
+                <li><a href="#artikel" onclick="scrollToSection('artikel')">Artikel</a></li>
+                <li><a href="#galeri" onclick="scrollToSection('galeri')">Galeri</a></li>
+                <li><a href="#tentang" onclick="scrollToSection('tentang')">Tentang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="beranda" class="section">
+            <div class="content-box" onclick="focusBox(this)">
+                <h2>Selamat Datang di Blog Perjalanan antar daerah</h2>
+                <p>Mulai dari keindahan alam pegunungan hingga pesona pantai tropis. Jika kalian sedang gabut di rumah tanpa aktivitas menarik, langsung saja ikut paket tour kami dan temukan pengalaman seru di berbagai daerah Indonesia!.</p>
+            </div>
+        </section>
+
+        <section id="artikel" class="section">
+            <div class="content-box" onclick="focusBox(this)">
+                <h2>Petualangan daerah epik</h2>
+                <img src="img/1.jpg" alt="Gambar Mars">
+                <p>Eksplorasi ke daerah yang asri</p>
+                <div class="hidden-content">
+                    <p>Bayangkan melangkahkan kaki di tanah baru yang belum pernah dijelajahi, menyusuri lembah hijau yang tersembunyi, atau menikmati senja di tepi laut dengan angin sejuk yang menyapa. Dengan setiap perjalanan, kita bukan hanya sekadar wisatawan, tetapi penjelajah yang mencari cerita, budaya, dan pengalaman baru. Cocok banget buat kamu yang mulai bosan dengan rutinitas di rumah!</p>
+                </div>
+                <a class="read-more" onclick="event.stopPropagation(); toggleReadMore(this)">Baca Selengkapnya</a>
+            </div>
+            <div class="content-box" onclick="focusBox(this)">
+                <h2>ayo ikut kami jika tertarik</h2>
+                <img src="img/2.jpg" alt="Sabuk Asteroid">
+                <p>Pengalaman seru menuju daerah baru</p>
+                <div class="hidden-content">
+                    <p>Pernah membayangkan bagaimana rasanya menjelajah tempat-tempat tersembunyi di negeri sendiri? Apakah kita akan menemukan budaya unik, cita rasa kuliner yang belum pernah dicoba, atau pemandangan yang seolah dari dunia lain? 🧭✨
+                        Maka dari itu, jadilah yang pertama!
+                        Perjalanan antar daerah bukan sekadar liburan, tapi gerbang menuju pengalaman tak terlupakan! Dari desa terpencil yang penuh cerita hingga kota yang kaya sejarah, mari kita jelajahi semuanya dengan cara yang seru dan penuh kejutan.</p>
+                </div>
+                <a class="read-more" onclick="event.stopPropagation(); toggleReadMore(this)">Baca Selengkapnya</a>
+            </div>
+            <div class="content-box" onclick="openModal(this)">
+                <h2>Program Harga Wisata</h2>
+                <p>Klik untuk melihat informasi wisata menarik ini</p>
+            </div>
+        </section>
+
+        <section id="galeri" class="section">
+            <div class="content-box">
+                <h2>Galeri Perjalanan kami sebelumnya</h2>
+                <div class="gallery-grid" id="gallery">
+                    <!-- Gambar akan ditambahkan secara dinamis via JavaScript -->
+                </div>
+            </div>
+            <div class="checkout-box">
+                <a href="youtube.com">Checkout Tiket kami Sekarang</a>
+            </div>
+        </section>
+
+        <section id="tentang" class="section">
+            <div class="content-box" onclick="focusBox(this)">
+                <h2>Tentang Kami</h2>
+                <p>Kami adalah tim perjalanan<br> yang siap mengajak kalian berlibur menjelajahi berbagai daerah, sambil berbagi pengalaman seru dan pengetahuan menarik seputar budaya lokal, kuliner khas, hingga keindahan alam Indonesia. Bergabunglah dengan kami dalam petualangan seru ini!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Blog Perjalanan wisata kami</p>
+    </footer>
+
+    <div id="programModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <h3>Program Harga wisata</h3>
+            <p>pt aira sandi </p>
+            <p>Program wisata:  daerah daerah </p>
+            <p>Tanggal: 28/09/2020</p>
+        </div>
+    </div>
+
+    <script>
+        // Canvas background animation
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const particlesArray = [];
+        const numberOfParticles = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = Math.random() > 0.5 ? '#00d4ff' : '#ff4081';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.size > 0.2) this.size -= 0.05;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = particlesArray[i].color;
+                        ctx.lineWidth = 0.2;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (particlesArray[i].size <= 0.2) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                    particlesArray.push(new Particle());
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Mouse interaction
+        canvas.addEventListener('mousemove', (event) => {
+            const mouseX = event.x;
+            const mouseY = event.y;
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                const dx = mouseX - particlesArray[i].x;
+                const dy = mouseY - particlesArray[i].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                    particlesArray[i].speedX += dx * 0.01;
+                    particlesArray[i].speedY += dy * 0.01;
+                }
+            }
+        });
+
+        // Original JavaScript functionality
+        document.querySelector('.menu-icon').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function focusBox(element) {
+            const boxes = document.getElementsByClassName('content-box');
+            for (let box of boxes) {
+                box.classList.remove('focused');
+            }
+            element.classList.add('focused');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        const gallery = document.getElementById('gallery');
+        const images = [
+            { src: 'img/6.jpg', alt: 'hoho' },
+            { src: 'img/4.jpg', alt: 'hehe' },
+            { src: 'img/5.jpg', alt: 'haha' },
+            { src: 'img/3.jpg', alt: 'gambar keempat' }
+        ];
+
+        function loadGallery() {
+            images.forEach((image, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.classList.add('gallery-item');
+                galleryItem.innerHTML = `<img src="${image.src}" alt="${image.alt}">`;
+                galleryItem.addEventListener('click', function() {
+                    const items = document.getElementsByClassName('gallery-item');
+                    for (let item of items) {
+                        item.classList.remove('focused');
+                    }
+                    this.classList.add('focused');
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+                gallery.appendChild(galleryItem);
+            });
+        }
+
+        function toggleReadMore(element) {
+            const contentBox = element.closest('.content-box');
+            const hiddenContent = contentBox.querySelector('.hidden-content');
+            hiddenContent.style.display = hiddenContent.style.display === 'block' ? 'none' : 'block';
+            element.textContent = hiddenContent.style.display === 'block' ? 'Sembunyikan' : 'Baca Selengkapnya';
+            contentBox.classList.toggle('focused');
+        }
+
+        function openModal() {
+            const modal = document.getElementById('programModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('programModal');
+            modal.style.display = 'none';
+        }
+
+        function copyCode() {
+            const code = document.querySelector('#programModal pre').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Kode berhasil disalin!');
+            });
+        }
+
+        window.onload = loadGallery;
+    </script>
+</body>
+</html>
